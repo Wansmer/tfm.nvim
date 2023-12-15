@@ -1,71 +1,145 @@
-# ranger.nvim
+# tfm.nvim
 
-[Ranger](https://github.com/ranger/ranger) integration plugin for neovim with
-no dependencies besides `ranger`.
+Neovim plugin for **T**erminal **F**ile **M**anager integration.
 
-[](https://user-images.githubusercontent.com/19686599/235407677-04066885-cb8a-43e1-9cee-479c8d4187e7.mov)
+<details>
+<summary><strong>Supported Terminal File Managers</strong></summary>
 
-## Dependencies
+- [yazi](https://github.com/sxyazi/yazi)
+- [ranger](https://github.com/ranger/ranger)
+- [nnn](https://github.com/jarun/nnn)
+- [lf](https://github.com/gokcehan/lf)
 
-- [Ranger](https://github.com/ranger/ranger)
+</details>
 
-## Install
+[Demo video](https://github.com/Rolv-Apneseth/ranger.nvim/assets/69486699/ad6f6cbb-b4cf-458f-a823-1d4e62434dfb)
 
-Install using your package manager. This plugin *does not set* Neovim keymaps by
-default, you will need to set your own keymaps using the exposed [api](#api).
-See below [Lazy](https://github.com/folke/lazy.nvim)
-configuration for example.
+## Introduction
 
-```lua
-{
-  "kelly-lin/ranger.nvim",
-  config = function()
-    require("ranger-nvim").setup({ replace_netrw = true })
-    vim.api.nvim_set_keymap("n", "<leader>ef", "", {
-      noremap = true,
-      callback = function()
-        require("ranger-nvim").open(true)
-      end,
-    })
-  end,
-}
-```
+When I discovered [ranger.nvim](https://github.com/kelly-lin/ranger.nvim), it ended up replacing [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua) for me, which was great. My only issue was that I wasn't such a huge fan of `ranger` itself. In trying to find an alternative, I was having to switch plugins entirely for each new one I wanted to try out, which was not ideal and inspired me to create this.
+
+With this plugin, you can simply change which TFM you wish to use (from the supported ones) in your configuration and you're good to go. It should also allow you to replace `netrw`.
+
+I am using this plugin full time but I don't use all the different file managers and modes available so if you find any issues please let me know and I'll do my best to address it.
+
+## Optional Dependencies
+
+- [ueberzugpp](https://github.com/jstkdng/ueberzugpp): for previewing images. Requires that your chosen file manager supports it.
 
 ## Configuration
 
-You can configure `ranger.nvim` by invoking `ranger_nvim.setup()` with an
-options `table` described below. Note: `ranger_nvim.setup()` is *optional*, if you
-do not invoke `ranger_nvim.setup()` `ranger.nvim` will use the default values.
+The setup function is completely optional. However, please note that by default this plugin does not set any keymaps or create any commands, so it is recommended to do so in your configuration.
 
-| Key | Type | Default | Description |
-| --- | ---- | ------- | ----------- |
-| `enable_cmds` | `boolean` | `false` | Set vim commands, see [commands](#commands). |
-| `keybinds` | `Keybind = table<string, OPEN_MODE>` | See [ranger keybindings](#ranger-keybindings). | Key bindings set in `ranger` to control how files are opened in neovim. See [ranger keybindings](#ranger-keybindings). |
-| `replace_netrw` | `boolean` | `false` | Replace `netrw` with `ranger` when neovim is launched with a directory argument. |
-| `ui` | `UI` | See [UI Configuration](#configuration---ui). | Settings for ranger window. |
+The below example configurations are given for [lazy.nvim](https://github.com/folke/lazy.nvim) but feel free to use your desired plugin manager.
 
-See below code snippet for example configuring `ranger.nvim` with the default
-values.
+### Minimal
 
 ```lua
-local ranger_nvim = require("ranger-nvim")
-ranger_nvim.setup({
-  enable_cmds = false,
-  replace_netrw = false,
-  keybinds = {
-    ["ov"] = ranger_nvim.OPEN_MODE.vsplit,
-    ["oh"] = ranger_nvim.OPEN_MODE.split,
-    ["ot"] = ranger_nvim.OPEN_MODE.tabedit,
-    ["or"] = ranger_nvim.OPEN_MODE.rifle,
-  },
-  ui = {
-    border = "none",
-    height = 1,
-    width = 1,
-    x = 0.5,
-    y = 0.5,
-  }
-})
+{
+    "rolv-apneseth/tfm.nvim",
+    config = function()
+        -- Set keymap so you can open the default terminal file manager (yazi)
+        vim.api.nvim_set_keymap("n", "<leader>e", "", {
+            noremap = true,
+            callback = require("tfm").open,
+        })
+    end,
+}
+```
+
+### Full
+
+```lua
+{
+    "rolv-apneseth/tfm.nvim",
+    lazy = false,
+    opts = {
+        -- TFM to use
+        -- Possible choices: "ranger" | "nnn" | "lf" | "yazi" (default)
+        file_manager = "yazi",
+        -- Replace netrw entirely
+        -- Default: false
+        replace_netrw = true,
+        -- Enable creation of commands
+        -- Default: false
+        -- Commands:
+        --   Tfm: selected file(s) will be opened in the current window
+        --   TfmSplit: selected file(s) will be opened in a horizontal split
+        --   TfmVsplit: selected file(s) will be opened in a vertical split
+        --   TfmTabedit: selected file(s) will be opened in a new tab page
+        enable_cmds = false, 
+        -- Customise UI. The below options are the default
+        ui = {
+            border = "rounded",
+            height = 1,
+            width = 1,
+            x = 0.5,
+            y = 0.5,
+        },
+    },
+    keys = {
+        -- Make sure to change these keybindings to your preference,
+        -- and remove the ones you won't use
+        {
+            "<leader>e",
+            ":Tfm<CR>",
+            desc = "TFM",
+        },
+        {
+            "<leader>mh",
+            ":TfmSplit<CR>",
+            desc = "TFM - horizonal split",
+        },
+        {
+            "<leader>mv",
+            ":TfmVsplit<CR>",
+            desc = "TFM - vertical split",
+        },
+        {
+            "<leader>mt",
+            ":TfmTabedit<CR>",
+            desc = "TFM - new tab",
+        },
+    },
+}
+```
+
+For the keybindings, you can also use a pure Lua implementation if you don't want to enable the commands:
+
+```lua
+    keys = {
+        {
+            "<leader>e",
+            function()
+                require("tfm").open()
+            end,
+            desc = "TFM",
+        },
+        {
+            "<leader>mh",
+            function()
+                local tfm = require("tfm")
+                tfm.open(nil, tfm.OPEN_MODE.split)
+            end,
+            desc = "TFM - horizonal split",
+        },
+        {
+            "<leader>mv",
+            function()
+                local tfm = require("tfm")
+                tfm.open(nil, tfm.OPEN_MODE.vsplit)
+            end,
+            desc = "TFM - vertical split",
+        },
+        {
+            "<leader>mt",
+            function()
+                local tfm = require("tfm")
+                tfm.open(nil, tfm.OPEN_MODE.tabedit)
+            end,
+            desc = "TFM - new tab",
+        },
+    },
 ```
 
 ### Configuration - UI
@@ -80,76 +154,40 @@ ranger_nvim.setup({
 
 ## API
 
-### `open(select_current_file: boolean)`
+### `open()`
 
-Opens `ranger` in a fullscreen floating window.
+Opens the TFM, focusing the file from the current buffer, and falling back to the `CWD` if that is not possible.
 
-When `select_current_file` is set to `true`, `ranger` will focus on the file in
-the current buffer on load.
+### `open(path_to_open, open_mode)`
 
-You can control how to open these files in Neovim by using the [ranger keybindings](#ranger-keybindings)
-that `ranger.nvim` sets.
+Opens the TFM at the given destination. If the path is a file, focuses that file. Selected file(s) will be
+opened with the given mode.
+
+- Setting `path_to_open` to `nil` is equivalent to calling `open()`
+- `open_mode` should be an option from the enum defined below. Defaults to opening file(s) in the current window if an invalid option is received
 
 ### `enum OPEN_MODE`
 
-Enum to configure keybindings for open modes.
+Enum to configure modes with which to open/edit selected files.
 
 | Variant | Action |
 | ------- | ------ |
 | `vsplit` | Open files in vertical split |
 | `split` | Open files in horizontal split |
 | `tabedit` | Open files in tab |
-| `rifle` | Open files with rifle |
-
-## Ranger Keybindings
-
-`ranger.nvim` sets `ranger` keybindings in order to control how selected files
-are opened in neovim. You can override the keybindings using `ranger_nvim.setup()`.
-
-See below table for default keybindings.
-
-**Note: the keybinding string is in ranger keybinding syntax and not vim syntax
-(they are bindings for ranger)**
-
-| Keybinding  | Action |
-| ----------- | ------ |
-| `<CR>`, `l` (when selected on file) | Open files in current window |
-| `ov` | Open files in vertical split |
-| `oh` | Open files in horizontal split |
-| `ot` | Open files in tab |
-| `or` | Open files with rifle |
-
-### Overriding Keybindings
-
-The `ranger-nvim` module provides an `OPEN_MODE` enum which is used to control
-the open modes. To override keybinds, create an entry in the `keybinds` table
-with a `string` key in **ranger** keybinding syntax (the same syntax you would
-use in your `rc.conf`) and assign it a value of an `OPEN_MODE` variant.
-
-```lua
-local ranger_nvim = require("ranger-nvim")
-ranger_nvim.setup({
-  keybinds = {
-    ["ov"] = ranger_nvim.OPEN_MODE.vsplit,
-    ["oh"] = ranger_nvim.OPEN_MODE.split,
-    ["ot"] = ranger_nvim.OPEN_MODE.tabedit,
-    ["or"] = ranger_nvim.OPEN_MODE.rifle,
-  },
-})
-```
-
-## Commands
-
-Commands are *disabled by default*, they can be enabled by setting `enable_cmds =
-true` in `ranger_nvim.setup()`.
-
-Below shows the mapping of commands to lua equivalents. See [api](#api) for more
-info.
-
-| Command | Lua |
-|---------|-----|
-| `Ranger` | `ranger_nvim.open(true)` |
 
 ## Contributing
 
-All feature/pull requests are welcome!
+Feel free let me know how I can improve this plugin by opening an issue. PRs are also welcome.
+
+## Acknowlegements
+
+- [@kelly-lin](https://github.com/kelly-lin) for writing [ranger.nvim](https://github.com/kelly-lin/ranger.nvim)
+
+### Other similar plugins
+
+- [yazi.nvim](https://github.com/DreamMaoMao/yazi.nvim)
+- [nnn.nvim](https://github.com/luukvbaal/nnn.nvim)
+- [lf.nvim](https://github.com/lmburns/lf.nvim)
+- [rnvimr](https://github.com/kevinhwang91/rnvimr) - for `ranger` as well, but actually uses `RPC` to communicate with it so it seems a good deal more complex than other similar plugins
+- [fm-nvim](https://github.com/is0n/fm-nvim) - Very similar to this plugin, probably wish I had found this sooner lol. Unfortunately it does not seem to be actively maintained, and does not do some of the things I really wanted this to do, namely close buffers for files that were deleted and completely replace netrw. Also `yazi` is my favourite so far and that is unsupported.
