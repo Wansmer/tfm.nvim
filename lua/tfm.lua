@@ -1,5 +1,6 @@
-local PATH_SELECTED_FILES = vim.fn.stdpath("cache") .. "/tfm_selected_files"
-local PATH_MODE_FILE = vim.fn.stdpath("cache") .. "/tfm_mode"
+local PATH_CACHE = vim.fn.stdpath("cache")
+local PATH_SELECTED_FILES = PATH_CACHE .. "/tfm_selected_files"
+local PATH_MODE_FILE = PATH_CACHE .. "/tfm_mode"
 
 local M = {}
 
