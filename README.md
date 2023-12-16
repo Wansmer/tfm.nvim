@@ -9,6 +9,7 @@ Neovim plugin for **T**erminal **F**ile **M**anager integration.
 - [ranger](https://github.com/ranger/ranger)
 - [nnn](https://github.com/jarun/nnn)
 - [lf](https://github.com/gokcehan/lf)
+- [vifm](https://github.com/vifm/vifm)
 
 </details>
 

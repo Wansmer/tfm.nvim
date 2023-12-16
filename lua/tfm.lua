@@ -54,6 +54,11 @@ M.FILE_MANAGERS = {
         set_file_chooser_ouput = "--chooser-file",
         set_focused_file = "",
     },
+    vifm = {
+        cmd = "vifm",
+        set_file_chooser_ouput = "--choose-files",
+        set_focused_file = "--select",
+    },
 }
 
 ---@type Options
