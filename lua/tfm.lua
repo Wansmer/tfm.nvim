@@ -14,6 +14,7 @@ local M = {}
 ---@field file_manager string
 ---@field enable_cmds boolean
 ---@field replace_netrw boolean
+---@field keybindings table<string, string>
 ---@field ui UI
 
 ---@class UI
@@ -73,6 +74,7 @@ local opts = {
         x = 0.5,
         y = 0.5,
     },
+    keybindings = {},
 }
 
 ---Get the function which will be used to open files based on the given mode
@@ -164,6 +166,7 @@ local function open_win()
     local win_width = math.ceil(vim.o.columns * opts.ui.width)
     local row = math.ceil((vim.o.lines - win_height) * opts.ui.y - 1)
     local col = math.ceil((vim.o.columns - win_width) * opts.ui.x)
+
     vim.api.nvim_open_win(buf, true, {
         relative = "editor",
         width = win_width,
@@ -174,6 +177,12 @@ local function open_win()
         style = "minimal",
     })
     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "" })
+    vim.api.nvim_buf_set_option(buf, "filetype", "tfm")
+
+    -- Apply custom keybinds
+    for keybind, command in pairs(opts.keybindings) do
+        vim.api.nvim_buf_set_keymap(buf, "t", keybind, command, { silent = true })
+    end
 end
 
 ---Returns a table with the names of all the currently listed buffers, which point to existing filenames
@@ -286,6 +295,7 @@ function M.open(path_to_open, open_mode)
     local last_win = vim.api.nvim_get_current_win()
 
     open_win()
+
     vim.fn.termopen(cmd, {
         on_exit = function(_, code, _)
             -- Return early if there was some error with the TFM

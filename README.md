@@ -69,6 +69,11 @@ The below example configurations are given for [lazy.nvim](https://github.com/fo
         --   TfmVsplit: selected file(s) will be opened in a vertical split
         --   TfmTabedit: selected file(s) will be opened in a new tab page
         enable_cmds = false, 
+        -- Custom keybindings only applied within the TFM buffer
+        -- Default: {}
+        keybindings = {
+            ["<ESC>"] = "q"
+        },
         -- Customise UI. The below options are the default
         ui = {
             border = "rounded",
