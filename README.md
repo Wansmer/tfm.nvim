@@ -172,6 +172,12 @@ opened with the given mode.
 - Setting `path_to_open` to `nil` is equivalent to calling `open()`
 - `open_mode` should be an option from the enum defined below. Defaults to opening file(s) in the current window if an invalid option is received
 
+### `select_file_manager(file_manager)`
+
+Changes the selected file manager. This is not persistent so the change will be lost when restarting Neovim.
+
+- `file_manager` should be one of the supported TFMs listed at the top of the page
+
 ### `enum OPEN_MODE`
 
 Enum to configure modes with which to open/edit selected files.
