@@ -275,15 +275,14 @@ function M.open(path_to_open, open_mode)
     end
 
     -- Exit early if the selected TFM is not executable
-    if vim.fn.executable(selected_file_manager.cmd) ~= 1 then
-        vim.api.nvim_err_write(
-            string.format(
-                "%s executable not found, please check that %s is installed and is in your path\n",
-                selected_file_manager.cmd
-            )
+    assert(
+        vim.fn.executable(selected_file_manager.cmd) == 1,
+        string.format(
+            "The '%s' executable not found, please check that '%s' is installed and is in your path\n",
+            selected_file_manager.cmd,
+            selected_file_manager.cmd
         )
-        return
-    end
+    )
 
     -- In case there are leftover files
     clean_up()
@@ -316,6 +315,17 @@ function M.open(path_to_open, open_mode)
         end,
     })
     vim.cmd.startinsert()
+end
+
+---Change the current file manager
+---@param file_manager string
+M.select_file_manager = function(file_manager)
+    assert(
+        M.FILE_MANAGERS[file_manager] ~= nil,
+        string.format("'%s' is not a valid option for a file_manager", file_manager)
+    )
+
+    opts.file_manager = file_manager
 end
 
 ---Optional setup to configure tfm.nvim.
