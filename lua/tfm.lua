@@ -246,6 +246,7 @@ end
 ---@param path_to_open string|nil Open the terminal file manager and select the current file. False means open the current directory instead (or pass in a second argument to specify a different path). Defaults to true.
 ---@param open_mode OPEN_MODE|nil Open the selected file(s) using a specific mode, e.g. "split", "vsplit", "tabedit"
 function M.open(path_to_open, open_mode)
+    ---@type FileManager
     local selected_file_manager = M.FILE_MANAGERS[opts.file_manager]
 
     -- Set default TFM if selected option is invalid
