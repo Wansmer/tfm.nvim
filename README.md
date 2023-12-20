@@ -110,44 +110,6 @@ The below example configurations are given for [lazy.nvim](https://github.com/fo
 }
 ```
 
-For the keybindings, you can also use a pure Lua implementation if you don't want to enable the commands:
-
-```lua
-    keys = {
-        {
-            "<leader>e",
-            function()
-                require("tfm").open()
-            end,
-            desc = "TFM",
-        },
-        {
-            "<leader>mh",
-            function()
-                local tfm = require("tfm")
-                tfm.open(nil, tfm.OPEN_MODE.split)
-            end,
-            desc = "TFM - horizonal split",
-        },
-        {
-            "<leader>mv",
-            function()
-                local tfm = require("tfm")
-                tfm.open(nil, tfm.OPEN_MODE.vsplit)
-            end,
-            desc = "TFM - vertical split",
-        },
-        {
-            "<leader>mt",
-            function()
-                local tfm = require("tfm")
-                tfm.open(nil, tfm.OPEN_MODE.tabedit)
-            end,
-            desc = "TFM - new tab",
-        },
-    },
-```
-
 ### Configuration - UI
 
 | Key | Type | Default | Value |
@@ -187,6 +149,65 @@ Enum to configure modes with which to open/edit selected files.
 | `vsplit` | Open files in vertical split |
 | `split` | Open files in horizontal split |
 | `tabedit` | Open files in tab |
+
+## Extras
+
+### Pure Lua keybindings
+
+If you don't want to enable the commands, you can just use pure Lua keybindings:
+
+```lua
+    keys = {
+        {
+            "<leader>e",
+            function()
+                require("tfm").open()
+            end,
+            desc = "TFM",
+        },
+        {
+            "<leader>mh",
+            function()
+                local tfm = require("tfm")
+                tfm.open(nil, tfm.OPEN_MODE.split)
+            end,
+            desc = "TFM - horizonal split",
+        },
+        {
+            "<leader>mv",
+            function()
+                local tfm = require("tfm")
+                tfm.open(nil, tfm.OPEN_MODE.vsplit)
+            end,
+            desc = "TFM - vertical split",
+        },
+        {
+            "<leader>mt",
+            function()
+                local tfm = require("tfm")
+                tfm.open(nil, tfm.OPEN_MODE.tabedit)
+            end,
+            desc = "TFM - new tab",
+        },
+    },
+```
+
+### Keybind to switch file manager
+
+```lua
+{
+    "<leader>mc",
+    function()
+        local tfm = require("tfm")
+        local selected_tfm = vim.fn.input("Change file manager: ")
+
+        if selected_tfm ~= "" and tfm.FILE_MANAGERS[selected_tfm] ~= nil then
+            tfm.select_file_manager(selected_tfm)
+        end
+    end,
+    desc = "TFM - change selected file manager",
+},
+```
 
 ## Contributing
 
