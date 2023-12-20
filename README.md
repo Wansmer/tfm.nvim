@@ -13,7 +13,7 @@ Neovim plugin for **T**erminal **F**ile **M**anager integration.
 
 </details>
 
-[Demo video](https://github.com/Rolv-Apneseth/ranger.nvim/assets/69486699/ad6f6cbb-b4cf-458f-a823-1d4e62434dfb)
+[Demo video](https://github.com/Rolv-Apneseth/tfm.nvim/assets/69486699/360ef477-fe97-4e47-b3a9-7813c3f82198)
 
 ## Introduction
 
