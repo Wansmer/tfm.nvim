@@ -3,28 +3,6 @@ local PATH_SELECTED_FILES = PATH_CACHE .. "/tfm_selected_files"
 
 local M = {}
 
----@class FileManager
----@field cmd string command name
----@field set_file_chooser_ouput string flag to set the chosen files output file
----@field set_focused_file string flag to set the focused file
-
----Configurable user options.
----@class Options
----@field file_manager string
----@field enable_cmds boolean
----@field replace_netrw boolean
----@field keybindings table<string, string>
----@field ui UI
-
----@class UI
----@field border string (see ':h nvim_open_win')
----@field height number from 0 to 1 (0 = 0% of screen and 1 = 100% of screen)
----@field width number from 0 to 1 (0 = 0% of screen and 1 = 100% of screen)
----@field x number from 0 to 1 (0 = left most of screen and 1 = right most of
----screen)
----@field y number from 0 to 1 (0 = top most of screen and 1 = bottom most of
----screen)
-
 ---@enum OPEN_MODE
 M.OPEN_MODE = {
   vsplit = "vsplit",
@@ -331,9 +309,6 @@ function M.setup(user_opts)
 
   if opts.enable_cmds then
     vim.cmd('command! Tfm lua require("tfm").open()')
-    vim.cmd(string.format('command! TfmSplit lua require("tfm").open(nil, "%s")', M.OPEN_MODE.split))
-    vim.cmd(string.format('command! TfmVsplit lua require("tfm").open(nil, "%s")', M.OPEN_MODE.vsplit))
-    vim.cmd(string.format('command! TfmTabedit lua require("tfm").open(nil, "%s")', M.OPEN_MODE.tabedit))
   end
 end
 
