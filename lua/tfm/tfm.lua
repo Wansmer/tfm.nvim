@@ -1,6 +1,8 @@
 local options = require("tfm.options")
 local u = require("tfm.utils")
 
+local ns = vim.api.nvim_create_namespace("__tfm__")
+
 ---@class WindowData
 ---@field win number
 ---@field buf number
@@ -24,11 +26,17 @@ function Tfm.new(opts)
   }, Tfm)
 end
 
-function Tfm:create_win()
+function Tfm:open_win()
   local prev_win = vim.api.nvim_get_current_win()
   local win, buf = u.open_win(self.opts.ui)
+
   self.data = { win = win, buf = buf, enter_win = prev_win }
   self:set_mappings()
+
+  vim.api.nvim_set_hl(ns, "NormalFloat", { bg = "#000000" })
+  vim.api.nvim_set_hl(ns, "FloatBorder", { fg = "#ffffff", bg = "#000000" })
+  vim.api.nvim_win_set_hl_ns(win, ns)
+
   if self.opts.on_open and type(self.opts.on_open) == "function" then
     self.opts.on_open(win, buf)
   end
@@ -54,7 +62,7 @@ function Tfm:run(path)
 
   local cmd = u.build_tfm_cmd(options.managers[self.opts.file_manager], path)
 
-  self:create_win()
+  self:open_win()
 
   vim.fn.termopen(cmd, {
     on_exit = function(_, code, _)

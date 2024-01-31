@@ -29,6 +29,7 @@ local DEFAULT_OPTIONS = {
   replace_netrw = true,
   file_manager = "yazi",
   cache_path = vim.fn.stdpath("cache") .. "/tfm",
+  follow_current_file = false,
   ui = {
     height = 0.8,
     width = 0.8,
